@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>Example1</title>
+	<style>
+		html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+		body { background: #000000; }
+		#game-container {
+			margin-left: auto;
+			margin-right: auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="game-container">
+		<canvas id="khanvas" style="outline: none;"></canvas>
+	</div>
+	<div id="haxe:trace" style="display: none;"></div>
+	<script>
+		var container = document.getElementById('game-container');
+		var h = window.innerHeight;
+		var w = (480 * h) / 720;
+		container.style.width = w + 'px';
+		container.style.height = h + 'px';
+	</script>
+	<script src="kha.js"></script>
+</body>
+</html>

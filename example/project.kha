@@ -1,0 +1,34 @@
+{
+	"format": 3,
+	"game": {
+		"name": "Example1",
+		"width": 480,
+		"height": 720
+	},
+	"assets": [		
+		{
+			"type": "image",
+			"file": "box.png",
+			"name": "box"
+		},
+		{
+			"type": "image",
+			"file": "rotate_device.png",
+			"name": "rotate_device"
+		}
+	],
+	"rooms": [
+		{
+			"name": "base",
+			"parent": null,
+			"neighbours": [],
+			"assets": [				
+				"box",
+				"rotate_device"
+			]
+		}
+	],
+	"sources": [
+		"../lib"
+	]
+}
