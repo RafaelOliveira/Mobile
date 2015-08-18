@@ -6,14 +6,9 @@ class Main
 {
 	public static function main() 
 	{
-		#if (js || sys_android || sys_android_native || sys_ios)
-		mobile.Mobile.setup(480, 720);
-		#end
+		mobile.Mobile.setup(480, 720);		
 		
 		var starter = new Starter();
-		starter.start(new Example1());
+		starter.start(new Example());
 	}
 }
-
-// https://openclipart.org/detail/201851/two-color-ball
-// https://openclipart.org/detail/29250/crate-front

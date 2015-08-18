@@ -10,12 +10,9 @@ import kha.graphics2.Graphics;
 import kha.Configuration;
 import kha.Framebuffer;
 import kha.LoadingScreen;
-
-#if (js || sys_android || sys_android_native || sys_ios)
 import mobile.Mobile;
-#end
 
-class Example1 extends Game 
+class Example extends Game 
 {
 	var backbuffer:Image;
 	var g:Graphics;
@@ -33,13 +30,8 @@ class Example1 extends Game
 
 	override public function init():Void 
 	{
-		// calculate the new size if is a mobile target, or use the one from project.kha
-		#if (js || sys_android || sys_android_native || sys_ios)
 		Mobile.calcGameSize();
-		backbuffer = Image.createRenderTarget(Mobile.width, Mobile.height);
-		#else
-		backbuffer = Image.createRenderTarget(width, height);
-		#end
+		backbuffer = Image.createRenderTarget(Mobile.width, Mobile.height);		
 		
 		#if js
 		Mobile.changeGameSize = changeGameSize;
