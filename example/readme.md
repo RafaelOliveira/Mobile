@@ -1,5 +1,5 @@
 ### Example
-The example shows 4 boxes in the corners of the screen. The game uses all screen available, independent of the device. If you rotate the screen to landscape, it shows a picture "asking" the user to rotate the screen.
+The example shows 4 boxes in the corners of the screen. The game uses all screen available, independent of the device. In mobile browsers if you rotate the screen to landscape, it shows a picture "asking" the user to rotate the screen.
 
 After create the html5 target, copy the index.html to build\html5. It contains some important changes.  
 There is some meta tag to prevent the screen to be scaled by the user, and to be able to add to the home screen in android/ios without show the menu.  
