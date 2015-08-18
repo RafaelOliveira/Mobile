@@ -7,9 +7,10 @@ In desktop browsers, the canvas size and position is controlled by the div game-
 
 On Android Studio, you need to put the orientation in portrait.
 
-Links: [html5]
+Links: [HTML5] | [Android]
 
 Box reference:  
 https://openclipart.org/detail/29250/crate-front
 
-[html5]:http://sudoestegames.com/exp/mobile-example/
+[HTML5]:http://sudoestegames.com/exp/mobile-example/
+[Android]:https://github.com/RafaelOliveira/Mobile/raw/master/example/Bin/app-arm7-debug.apk
