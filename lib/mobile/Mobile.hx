@@ -1,39 +1,74 @@
 package mobile;
 
 #if js
-import kha.Image;
-import kha.Loader;
 import js.Browser;
 import js.html.CanvasElement;
 import js.html.DivElement;
+import kha.Image;
+import kha.SystemImpl;
 #else
-import kha.Sys;
+import kha.System;
 #end
 
 class Mobile
 {
+	/** The base width of the game */
 	public static var baseWidth:Int;
+	
+	/** The base height of the game */
 	public static var baseHeight:Int;
 	
+	/** The width of the backbuffer that is scaled */
 	public static var width:Int;
+	
+	/** The height of the backbuffer that is scaled */
 	public static var height:Int;
 	
+	/** The actual width of the screen */
+	public static var screenWidth(get, null):Int;
+	
+	/** The actual height of the screen */
+	public static var screenHeight(get, null):Int;
+	
+	/** 
+	 * The scaling factor of the backbuffer of the game
+	 * in relation with the actual screen
+	 */
+	public static var scaleFactor:Float;
+	
 	#if js
+	/** Indicator of the portrait orientation */
 	public inline static var PORTRAIT:Int = 1;
-	public inline static var LANDSCAPE:Int = 2;
+	
+	/** Indicator of the landscape orientation */
+	public inline static var LANDSCAPE:Int = 2;	
+	
+	/** 
+	 * The actual orientation of the screen. Only used in js
+	 * because in mobile generally the screen orientation is locked
+	 */
+	public static var actualOrientation:Int;
+	
+	/** 
+	 * The correct orientation of the game, based on the base width and height of the game. 
+	 * Only used in js because in mobile generally the screen orientation is locked
+	 */
+	public static var correctOrientation:Int;
+	
+	/** A div element that is the container of the game canvas (js) */
+	public static var container:DivElement;
+	
+	/** The canvas element of the game (js) */
+	public static var canvas:CanvasElement;
+	
+	/** Indicates if the game is running in a mobile browser or desktop (js) */
+	public static var isMobile:Bool;	
+	
+	 /** A function that is called when the canvas size has changed (js) */
+	public static var changeGameSize:Int->Int->Void;
 	
 	private static var orWidth:Int;
 	private static var orHeight:Int;
-	
-	public static var actualOrientation:Int;
-	public static var correctOrientation:Int;
-	
-	public static var container:DivElement;
-	public static var canvas:CanvasElement;
-	
-	public static var isMobile:Bool;
-	public static var scaleFactor:Float;
-	public static var changeGameSize:Int->Int->Void;
 	#end
 	
 	public static function setup(baseWidth:Int, baseHeight:Int) 
@@ -127,13 +162,13 @@ class Mobile
 		var ratioX:Float = 0;
 		var ratioY:Float = 0;
 		
-		ratioX = Sys.pixelWidth / baseWidth;
-		ratioY = Sys.pixelHeight / baseHeight;
+		ratioX = System.pixelWidth / baseWidth;
+		ratioY = System.pixelHeight / baseHeight;
 		
-		var scaleFactor = Math.min(ratioX, ratioY);
+		scaleFactor = Math.min(ratioX, ratioY);
 		
-		width = Std.int(Math.ceil(Sys.pixelWidth / scaleFactor));
-		height = Std.int(Math.ceil(Sys.pixelHeight / scaleFactor));
+		width = Std.int(Math.ceil(System.pixelWidth / scaleFactor));
+		height = Std.int(Math.ceil(System.pixelHeight / scaleFactor));
 		#end
 	}
 	
@@ -197,8 +232,8 @@ class Mobile
 		canvas.width = w;
 		canvas.height = h;
 
-		if (kha.Sys.gl != null)
-			kha.Sys.gl.viewport(0, 0, w, h);
+		if (isUsingWebGL())
+			SystemImpl.gl.viewport(0, 0, w, h);			
 
 		orWidth = w;
 		orHeight = h;
@@ -211,6 +246,10 @@ class Mobile
 			changeGameSize(width, height);
 	}
 	
+	/**
+	 * Creates a transparent html link with a rectangular size, that opens a url and call a function callback.
+	 * The button is resized according to the scale factor of the game.
+	 */
 	public static function createHtmlButton(id:String, x:Float, y:Float, w:Int, h:Int, url:String, onClickFunc:Void->Void = null)
 	{
 		var htmlBt = Browser.document.createAnchorElement();
@@ -231,10 +270,36 @@ class Mobile
 		Browser.document.body.appendChild(htmlBt);
 	}
 	
+	/**
+	 * Removes the html link from the screen
+	 */
 	public static function removeHtmlButton(id:String)
 	{
 		var htmlBt = Browser.document.getElementById(id);
 		Browser.document.body.removeChild(htmlBt);
 	}
+	
+	inline public static function isUsingWebGL():Bool
+	{
+		return (SystemImpl.gl != null);
+	}
 	#end
+	
+	static function get_screenWidth():Int 
+	{
+		#if js
+		return canvas.clientWidth;
+		#else
+		return System.pixelWidth;
+		#end
+	}
+	
+	static function get_screenHeight():Int 
+	{
+		#if js
+		return canvas.clientHeight;
+		#else
+		return System.pixelHeight;
+		#end
+	}
 }

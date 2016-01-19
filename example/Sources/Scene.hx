@@ -2,7 +2,7 @@ package;
 
 import kha.graphics2.Graphics;
 import kha.Image;
-import kha.Loader;
+import kha.Assets;
 import mobile.Mobile;
 
 class Scene
@@ -12,7 +12,7 @@ class Scene
 	
 	public function new() 
 	{			
-		imgBox = Loader.the.getImage('box');
+		imgBox = Assets.images.box;
 		sprites = new Array<Sprite>();
 		
 		// boxes
@@ -37,6 +37,6 @@ class Scene
 	public function render(g:Graphics)
 	{
 		for (spt in sprites)
-			g.drawScaledSubImage(imgBox, 0, 0, imgBox.width, imgBox.height, spt.x, spt.y, imgBox.width, imgBox.height);
+			g.drawImage(imgBox, spt.x, spt.y);			
 	}
 }

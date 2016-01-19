@@ -1,21 +1,20 @@
 package;
 
 import kha.Color;
-import kha.Game;
-import kha.Loader;
+import kha.Assets;
 import kha.Scaler;
-import kha.Sys;
+import kha.System;
 import kha.Image;
 import kha.graphics2.Graphics;
-import kha.Configuration;
+import kha.graphics2.ImageScaleQuality;
 import kha.Framebuffer;
-import kha.LoadingScreen;
 import mobile.Mobile;
 
-class Example extends Game 
+class Example
 {
 	var backbuffer:Image;
 	var g:Graphics;
+	var initialized:Bool = false;
 	
 	var scene:Scene;
 	
@@ -25,11 +24,6 @@ class Example extends Game
 
 	public function new() 
 	{
-		super('Example1');
-	}
-
-	override public function init():Void 
-	{
 		Mobile.calcGameSize();
 		backbuffer = Image.createRenderTarget(Mobile.width, Mobile.height);		
 		
@@ -38,31 +32,33 @@ class Example extends Game
 		#end
 		
 		g = backbuffer.g2;
-		Configuration.setScreen(new LoadingScreen());
-		Loader.the.loadRoom('base', roomLoaded);	
-	}
+		
+		Assets.loadEverything(loadingFinished);
+	}	
 	
-	private function roomLoaded():Void 
+	private function loadingFinished():Void 
 	{
+		initialized = true;
+		
 		#if js
 		if (Mobile.isMobile)
-			imgRotDevice = Loader.the.getImage('rotate_device');
-		
-		if (kha.Sys.gl != null)
-		#end
-			cast(g, kha.graphics4.Graphics2).setBilinearFiltering(true);
+			imgRotDevice = Assets.images.rotate_device;		
+		#end			
 			
-		scene = new Scene();
+		scene = new Scene();		
+	}
 		
-		Configuration.setScreen(this);
+	public function update():Void 
+	{
+		#if js
+		if (!initialized)
+			return;
+		
+		Mobile.update();
+		#end
 	}
 	
 	#if js
-	override public function update():Void 
-	{
-		Mobile.update();		
-	}
-	
 	// only html5 checks for changes in the orientation. in desktop browsers
 	// a change in the div container will also call this function
 	public function changeGameSize(newWidth:Int, newHeight:Int):Void
@@ -70,26 +66,27 @@ class Example extends Game
 		backbuffer = Image.createRenderTarget(newWidth, newHeight);
 		g = backbuffer.g2;
 		
-		if (kha.Sys.gl != null)
-			cast(g, kha.graphics4.Graphics2).setBilinearFiltering(true);
-		
 		scene.gameSizeChanged(newWidth, newHeight);	
 	}
 	#end
 	
-	override public function render(frame:Framebuffer):Void 
+	public function render(framebuffer:Framebuffer):Void 
 	{
+		if (!initialized)
+			return;
+		
 		g.begin(true, Color.fromValue(0xffdcdcdc));
 		
 		#if js
+		if (Mobile.isUsingWebGL())
+			framebuffer.g2.imageScaleQuality = ImageScaleQuality.High;
+		
+		// if it's in a mobile browser and is in the incorrect orientation,
+		// draw the message to rotate the screen
 		if (Mobile.isMobile && Mobile.actualOrientation == Mobile.LANDSCAPE)
 		{
-			g.clear(Color.White);
-			g.color = Color.White;
-			
-			g.drawScaledSubImage(imgRotDevice, 0, 0, imgRotDevice.width, imgRotDevice.height, 
-								(Mobile.width / 2) - (imgRotDevice.width / 2), (Mobile.height / 2) - (imgRotDevice.height / 2),
-								imgRotDevice.width, imgRotDevice.height);
+			g.clear(Color.White);			
+			g.drawImage(imgRotDevice, (Mobile.width / 2) - (imgRotDevice.width / 2), (Mobile.height / 2) - (imgRotDevice.height / 2));			
 		}
 		else
 		#end
@@ -97,8 +94,8 @@ class Example extends Game
 		
 		g.end();
 		
-		startRender(frame);
-		Scaler.scale(backbuffer, frame, Sys.screenRotation);
-		endRender(frame);
+		framebuffer.g2.begin();
+		Scaler.scale(backbuffer, framebuffer, System.screenRotation);
+		framebuffer.g2.end();
 	}
 }
