@@ -25,6 +25,8 @@ class Example
 	public function new() 
 	{
 		Mobile.calcGameSize();
+		
+		// creates the backbuffer with a size that scales correctly with the screen
 		backbuffer = Image.createRenderTarget(Mobile.width, Mobile.height);		
 		
 		#if js
